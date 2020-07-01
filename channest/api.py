@@ -30,39 +30,40 @@ class _Setup:
 
 def calculate_channel_parameters(settings: Union[Dict[str, Any], str], output_directory: str):
     """
-    Estimate channel parameters based on the provided parameteres
+    Estimate channel parameters based on the provided parameters
 
-    # settings
-    File path to a json file or a dictionary containing estimation settings. All settings are optional except data_file.
-    In addition to these settings, advanced settings are described below. There are several available advanced settings.
-    However, the default values have been determined experimentally and should work well for most Delft3D models. The
-    advanced settings are documented below for completeness.
+    ### settings
+    File path to a json file or a dictionary containing estimation settings. All settings are optional except
+    **data_file**. In addition to these settings, advanced settings are described below. There are several available
+    advanced settings. However, the default values have been determined experimentally and should work well for most
+    Delft3D models. The advanced settings are documented below for completeness.
 
-    - **data_file** File path to a ResQml model (.epc file)
+    - **data_file** File path to a RESQML model (.epc file)
 
     - **crop_box** Dictionary describing the extent of the model to use for estimation. Specified by providing keys x_0,
     x_1, y_0 and y_1 with float values. Delft3D models are typically starting at x=0, y=0.
 
-    # output_directory
+    ### output_directory
     Directory to which output is written.  The following files are written (relative to the provided directory):
 
-    - **Tw_scatter.png** Scatter plot showing the channel thickness/width distribution per layer.
+    - **tw_scatter.png** Scatter plot showing the channel thickness/width distribution per layer. Requires plotly-orca,
+    otherwise, this is skipped.
 
-    - **summary.json** Json file containing the main results as well as the settings used to generate the results.
-    Values under channel-width and channel-height are averaged over layers, with each layer having equal weight. Values
-    under segment-width and segment-height are averaged over the segments described in section REF, with each segment
-    having equal weight.
+    - **tw_scatter.html** Scatter plot showing the channel thickness/width distribution per layer. Same as
+    tw_scatter.png, except as html (based on plotly) which adds zoom and pan functions.
 
-    # Advanced settings
-    The advanced settings can be split in two: method-related and output-related. All settings under method-related must
-    be specified as lists of single values. All combinations of such values are then executed in a multi-configuration
-    fashion, similar to vargrest.
+    - **summary.json** JSON file containing the main results as well as the settings used to generate the results.
+    Values under "channel-width" and "channel-height" are averaged over layers, with each layer having equal weight.
+    Values under "segment-width" and "segment-height" are averaged over width segments, with each segment having equal
+    weight.
 
-    ## Method-related parameters:
-    TODO: revise after theory section is complete. Note that enabling some of the options may invoke a more complicated
-     algorithm. Consider if it is worth including them in this description, or if we should drop them completely. E.g.
-     “element_threshold”. Also consider if we should rename some of the options.
+    ### Advanced settings
+    The advanced settings can be split in two: method-related and output-related. Some settings under method-related
+    must be specified as lists of single values. All combinations of such values are then executed in a
+    multi-configuration fashion, similar to vargrest. These settings are indicated by having a default values surrounded
+    by [brackets].
 
+    #### Method-related parameters:
     - **merge_layers** Number of layers to merge when calculating segments. Default is [5].
 
     - **alpha_hull** Parameter to the alpha hull algorithm. 0.0 yields the convex hull. Default is [0.6]
@@ -71,19 +72,20 @@ def calculate_channel_parameters(settings: Union[Dict[str, Any], str], output_di
     merge layers. A value of None yields a default of including all points with a channel in at least one layer. Default
     is [None]
 
-    - **mean_map_threshold** TODO: Refer to theory. Perhaps a variable there?
+    - **mean_map_threshold** Threshold between 0.0 and 1.0 used when filtering segments that cross areas not labeled as
+    channel. A value of 1.0 removes all segments touching an area not labeled as channel. A value of 0.0 will only
+    remove segments that does not touch areas labeled as channel at all. Default is [0.9]
 
     - **minimum_polygon_area** Minimum area of the alpha polygon shape for it to be included in the estimation. Default
     is 100.
 
-    - **turn_off_filters** Disables all segment filters when set to True. Primary purpose would be debugging. Default is
-    False.
+    - **turn_off_filters** Disables all segment filters when set to True. Default is [False].
 
     - **step_z** Sampling rate in z-direction in number of layers. Default is 1, which means all layers are sampled.
 
     - **z0** Starting layer for sampling in z-direction. Default is 0.
 
-    ## Output-related parameters:
+    #### Output-related parameters:
 
     - **generate_plots** Generate additional quality assessment plots. Default is False.
 
