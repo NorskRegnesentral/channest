@@ -1,3 +1,4 @@
+import os
 import plotly.graph_objs as go
 import numpy as np
 from typing import List
@@ -35,4 +36,11 @@ def create_width_height_scatter(fn: str,
     f.layout.yaxis.range = (0, max_height)
 
     f.write_html(fn + '.html')
-    f.write_image(fn + '.png', scale=2.0)
+    try:
+        f.write_image(fn + '.png', scale=2.0)
+    except ValueError as e:
+        # Can occur if orca is not installed or configured properly
+        print(str(e))
+        print('*' * 7, end='')
+        print(f' Orca was not found. Execution continues without exporting {os.path.basename(fn)}.png ', end='')
+        print('*' * 7)
