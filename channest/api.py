@@ -200,6 +200,10 @@ def calculate_channel_parameters(settings: Union[Dict[str, Any], str], output_di
         res['settings'] = settings
         o_sn = os.path.join(output_directory, f'summary{post_fix}.json')
         json.dump(res, open(o_sn, 'w'), indent='    ')
+        # Replace 'NaN' with 'null' to comply with JSON specification. This is not a bullet-proof replacement, but
+        # should not be a problem since we have full control of the content of the output file
+        new_jf = open(o_sn, 'r').read().replace('NaN', 'null')
+        open(o_sn, 'w').write(new_jf)
         create_width_height_scatter(f'{output_directory}/tw_scatter', poly_widths, poly_heights, dxy,
                                     scatter_max_height, scatter_max_width)
         if generate_plots is True:
