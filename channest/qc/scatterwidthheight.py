@@ -1,6 +1,7 @@
 import os
 import plotly.graph_objs as go
 import numpy as np
+import csv
 from typing import List
 
 from channest.heights import LayerHeights
@@ -44,3 +45,13 @@ def create_width_height_scatter(fn: str,
         print('*' * 7, end='')
         print(f' Orca was not found. Execution continues without exporting {os.path.basename(fn)}.png ', end='')
         print('*' * 7)
+
+    # Dump raw plot data as csv
+    with open(fn + '.csv', 'w', newline='') as f:
+        nl, nw, nt = 'Layer#', 'Width[m]', 'Thickness[m]'
+        d = csv.DictWriter(f, (nl, nw, nt))
+        d.writeheader()
+        d.writerows([
+            {nl: i, nw: w, nt: h}
+            for i, (w, h) in enumerate(zip(flat_widths, flat_heights))
+        ])
