@@ -90,7 +90,7 @@ def calculate_channel_parameters(settings: Union[Dict[str, Any], str], output_di
     - **generate_plots** Generate additional quality assessment plots. Default is False.
 
     - **generate_fences** Generate poly lines as text files along the longest channel in each layer. These lines can be
-    important and used as “fences” in RMS for. Default is False.
+    important and used as "fences" in RMS for. Default is False.
 
     - **pickle_data** Store preliminary results in a Python pickle file. Main purpose is debugging or alternative
     post-processing. Default is False.
